@@ -2,16 +2,22 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Eye, ArrowRight } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Eye, ArrowRight, X } from "lucide-react";
 import equipmentHero from "@/assets/equipment-hero.jpg";
+import Tour360Viewer from "@/components/Tour360Viewer";
+import { useState } from "react";
 
 const Tours = () => {
+  const [selectedTour, setSelectedTour] = useState<string | null>(null);
+
   const tours = [
     {
       id: "1",
       title: "Elegant Wedding Setup",
       description: "Experience a luxurious wedding venue setup with gold accents and crystal details",
       image: equipmentHero,
+      panoramaUrl: equipmentHero, // Replace with actual 360° equirectangular image
       duration: "360° Interactive Tour",
     },
     {
@@ -19,6 +25,7 @@ const Tours = () => {
       title: "Corporate Gala Event",
       description: "Professional corporate event styling with modern aesthetics and premium furnishings",
       image: equipmentHero,
+      panoramaUrl: equipmentHero, // Replace with actual 360° equirectangular image
       duration: "360° Interactive Tour",
     },
     {
@@ -26,14 +33,16 @@ const Tours = () => {
       title: "Garden Party Collection",
       description: "Outdoor event setup featuring elegant outdoor furniture and decorative elements",
       image: equipmentHero,
+      panoramaUrl: equipmentHero, // Replace with actual 360° equirectangular image
       duration: "360° Interactive Tour",
     },
   ];
 
   const handleTourClick = (tourId: string) => {
-    // In a real implementation, this would open the 360° tour viewer
-    console.log("Opening tour:", tourId);
+    setSelectedTour(tourId);
   };
+
+  const activeTour = tours.find(tour => tour.id === selectedTour);
 
   return (
     <div className="min-h-screen bg-background">
@@ -125,6 +134,28 @@ const Tours = () => {
       </section>
 
       <Footer />
+
+      {/* 360° Tour Dialog */}
+      <Dialog open={!!selectedTour} onOpenChange={(open) => !open && setSelectedTour(null)}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] h-[90vh] p-0 overflow-hidden">
+          <DialogHeader className="absolute top-4 left-4 right-4 z-10 flex flex-row items-center justify-between bg-background/80 backdrop-blur-sm p-4 rounded-lg border border-border">
+            <DialogTitle className="text-xl font-bold">{activeTour?.title}</DialogTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSelectedTour(null)}
+              className="h-8 w-8"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </DialogHeader>
+          {activeTour && (
+            <div className="w-full h-full">
+              <Tour360Viewer imageUrl={activeTour.panoramaUrl} />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
