@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Calendar, Eye } from "lucide-react";
+import BookingForm from "./BookingForm";
 
 interface EquipmentCardProps {
   id: string;
@@ -23,7 +26,9 @@ const EquipmentCard = ({
   available,
   featured = false,
 }: EquipmentCardProps) => {
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
   return (
+    <>
     <Card className="group overflow-hidden border-border bg-card hover:shadow-elegant transition-smooth">
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
@@ -58,12 +63,15 @@ const EquipmentCard = ({
       </CardContent>
 
       <CardFooter className="p-4 pt-0 flex gap-2">
-        <Link to={`/equipment/${id}`} className="flex-1">
-          <Button variant="default" className="w-full" disabled={!available}>
-            <Calendar className="mr-2 h-4 w-4" />
-            Book Now
-          </Button>
-        </Link>
+        <Button 
+          variant="default" 
+          className="flex-1" 
+          disabled={!available}
+          onClick={() => setIsBookingOpen(true)}
+        >
+          <Calendar className="mr-2 h-4 w-4" />
+          Book Now
+        </Button>
         <Link to={`/equipment/${id}`}>
           <Button variant="outline" size="icon">
             <Eye className="h-4 w-4" />
@@ -71,6 +79,21 @@ const EquipmentCard = ({
         </Link>
       </CardFooter>
     </Card>
+
+    <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Book Equipment</DialogTitle>
+        </DialogHeader>
+        <BookingForm 
+          equipmentId={id}
+          equipmentName={name}
+          pricePerDay={price}
+          onSuccess={() => setIsBookingOpen(false)}
+        />
+      </DialogContent>
+    </Dialog>
+    </>
   );
 };
 

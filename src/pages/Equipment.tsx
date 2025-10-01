@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import EquipmentCard from "@/components/EquipmentCard";
@@ -17,66 +18,34 @@ import equipmentHero from "@/assets/equipment-hero.jpg";
 const Equipment = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [equipment, setEquipment] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Sample equipment data
-  const equipment = [
-    {
-      id: "1",
-      name: "Gold Chiavari Chairs",
-      category: "Seating",
-      price: 12,
-      image: equipmentHero,
-      available: true,
-      featured: true,
-    },
-    {
-      id: "2",
-      name: "Crystal Glassware Set",
-      category: "Tableware",
-      price: 8,
-      image: equipmentHero,
-      available: true,
-      featured: true,
-    },
-    {
-      id: "3",
-      name: "White Linen Tablecloths",
-      category: "Linens",
-      price: 15,
-      image: equipmentHero,
-      available: true,
-    },
-    {
-      id: "4",
-      name: "Silver Serving Platters",
-      category: "Tableware",
-      price: 10,
-      image: equipmentHero,
-      available: true,
-    },
-    {
-      id: "5",
-      name: "Crystal Centerpieces",
-      category: "Decor",
-      price: 25,
-      image: equipmentHero,
-      available: false,
-    },
-    {
-      id: "6",
-      name: "Velvet Table Runners",
-      category: "Linens",
-      price: 18,
-      image: equipmentHero,
-      available: true,
-    },
-  ];
+  useEffect(() => {
+    fetchEquipment();
+  }, []);
 
-  const categories = ["all", "Seating", "Tableware", "Linens", "Decor"];
+  const fetchEquipment = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('equipment')
+        .select('*')
+        .order('featured', { ascending: false });
+
+      if (error) throw error;
+      setEquipment(data || []);
+    } catch (error) {
+      console.error('Error fetching equipment:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const categories = ["all", ...Array.from(new Set(equipment.map(item => item.category)))];
 
   const filteredEquipment = equipment.filter((item) => {
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
+    const matchesCategory = selectedCategory === "all" || item.category.toLowerCase() === selectedCategory.toLowerCase();
     return matchesSearch && matchesCategory;
   });
 
@@ -129,10 +98,23 @@ const Equipment = () => {
       {/* Equipment Grid */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          {filteredEquipment.length > 0 ? (
+          {loading ? (
+            <div className="text-center py-20">
+              <p className="text-muted-foreground">Loading equipment...</p>
+            </div>
+          ) : filteredEquipment.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredEquipment.map((item) => (
-                <EquipmentCard key={item.id} {...item} />
+                <EquipmentCard 
+                  key={item.id} 
+                  id={item.id}
+                  name={item.name}
+                  category={item.category}
+                  price={parseFloat(item.price_per_day)}
+                  image={item.image_url}
+                  available={item.available_quantity > 0}
+                  featured={item.featured}
+                />
               ))}
             </div>
           ) : (

@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -12,30 +13,52 @@ import { toast } from "sonner";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { user, signIn, signUp } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate login
-    setTimeout(() => {
-      toast.success("Welcome back!");
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    const { error } = await signIn(email, password);
+    
+    if (error) {
+      toast.error(error.message);
       setIsLoading(false);
+    } else {
+      toast.success("Welcome back!");
       navigate("/");
-    }, 1000);
+    }
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate signup
-    setTimeout(() => {
-      toast.success("Account created successfully!");
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const fullName = formData.get('full_name') as string;
+
+    const { error } = await signUp(email, password, fullName);
+    
+    if (error) {
+      toast.error(error.message);
       setIsLoading(false);
+    } else {
+      toast.success("Account created! Welcome to Remrose!");
       navigate("/");
-    }, 1000);
+    }
   };
 
   return (
@@ -74,6 +97,7 @@ const Auth = () => {
                       <Label htmlFor="login-email">Email</Label>
                       <Input
                         id="login-email"
+                        name="email"
                         type="email"
                         placeholder="you@example.com"
                         required
@@ -83,6 +107,7 @@ const Auth = () => {
                       <Label htmlFor="login-password">Password</Label>
                       <Input
                         id="login-password"
+                        name="password"
                         type="password"
                         placeholder="••••••••"
                         required
@@ -115,6 +140,7 @@ const Auth = () => {
                       <Label htmlFor="signup-name">Full Name</Label>
                       <Input
                         id="signup-name"
+                        name="full_name"
                         type="text"
                         placeholder="John Doe"
                         required
@@ -124,6 +150,7 @@ const Auth = () => {
                       <Label htmlFor="signup-email">Email</Label>
                       <Input
                         id="signup-email"
+                        name="email"
                         type="email"
                         placeholder="you@example.com"
                         required
@@ -133,8 +160,10 @@ const Auth = () => {
                       <Label htmlFor="signup-password">Password</Label>
                       <Input
                         id="signup-password"
+                        name="password"
                         type="password"
                         placeholder="••••••••"
+                        minLength={6}
                         required
                       />
                     </div>
