@@ -21,15 +21,29 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "https://remrose-catering-rental-qada.vercel.app"  
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"]
   }
 });
 
 app.use(express.json());
+const allowedOrigins = [
+  'http://localhost:5173',  
+  'https://remrose-catering-rental-qada.vercel.app' 
+];
+
 app.use(cors({
-origin: 'http://remrose-catering-rental-qada.vercel.app',
-credentials: true
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
 }));
 
 const __filename = fileURLToPath(import.meta.url);
