@@ -1,66 +1,86 @@
-import { useEffect, useState } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+import { createContext, useContext, useState, useEffect } from 'react';
 
-export const useAuth = () => {
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+}
+
+type AuthContextType = {
+  user: User | null;
+  loading: boolean;
+  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signOut: () => Promise<{ error: any }>;
+};
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
+    // Check if user is stored in localStorage
+    const storedUser = localStorage.getItem('remrose_user');
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
+        localStorage.removeItem('remrose_user');
       }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    }
+    setLoading(false);
   }, []);
 
-  const signUp = async (email: string, password: string, fullName: string) => {
-    const redirectUrl = `${window.location.origin}/`;
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: {
-          full_name: fullName,
-        },
-      },
-    });
-    return { data, error };
-  };
-
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { data, error };
+    try {
+      const res = await fetch('http://localhost:5000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        return { error: { message: data.message || 'Login failed' } };
+      }
+
+      // Store user data
+      const userData = data.user;
+      localStorage.setItem('remrose_user', JSON.stringify(userData));
+      setUser(userData);
+
+      return { error: null };
+    } catch (error) {
+      console.error('Sign in error:', error);
+      return { error: { message: 'Network error. Please try again.' } };
+    }
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    return { error };
+    try {
+      // Clear user data
+      localStorage.removeItem('remrose_user');
+      setUser(null);
+      return { error: null };
+    } catch (error) {
+      return { error: { message: 'Failed to sign out' } };
+    }
   };
 
-  return {
-    user,
-    session,
-    loading,
-    signUp,
-    signIn,
-    signOut,
-  };
+  return (
+    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used inside <AuthProvider>');
+  return ctx;
 };

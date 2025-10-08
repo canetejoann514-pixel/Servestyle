@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import FeaturesSection from "@/components/FeaturesSection";
@@ -6,46 +7,33 @@ import EquipmentCard from "@/components/EquipmentCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import equipmentHero from "@/assets/equipment-hero.jpg";
 
 const Home = () => {
-  // Sample featured equipment
-  const featuredEquipment = [
-    {
-      id: "1",
-      name: "Gold Chiavari Chairs",
-      category: "Seating",
-      price: 12,
-      image: equipmentHero,
-      available: true,
-      featured: true,
-    },
-    {
-      id: "2",
-      name: "Crystal Glassware Set",
-      category: "Tableware",
-      price: 8,
-      image: equipmentHero,
-      available: true,
-      featured: true,
-    },
-    {
-      id: "3",
-      name: "White Linen Tablecloths",
-      category: "Linens",
-      price: 15,
-      image: equipmentHero,
-      available: true,
-      featured: true,
-    },
-  ];
+  const [featuredEquipment, setFeaturedEquipment] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/equipment");
+        const data = await res.json();
+        // Only show featured equipment
+        setFeaturedEquipment(data.filter((item: any) => item.featured));
+      } catch (error) {
+        setFeaturedEquipment([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFeatured();
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
       <Hero />
       <FeaturesSection />
-      
+
       {/* Featured Equipment Section */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
@@ -67,9 +55,21 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {featuredEquipment.map((item) => (
-              <EquipmentCard key={item.id} {...item} />
-            ))}
+            {loading ? (
+              <div className="text-center py-20">
+                <p className="text-muted-foreground">Loading equipment...</p>
+              </div>
+            ) : featuredEquipment.length > 0 ? (
+              featuredEquipment.map((item) => (
+                <EquipmentCard key={item._id} id={item._id} featured={item.featured} />
+              ))
+            ) : (
+              <div className="text-center py-20">
+                <p className="text-lg text-muted-foreground">
+                  No featured equipment found
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="text-center md:hidden">

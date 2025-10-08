@@ -7,6 +7,7 @@ import { Eye, ArrowRight, X } from "lucide-react";
 import equipmentHero from "@/assets/equipment-hero.jpg";
 import Tour360Viewer from "@/components/Tour360Viewer";
 import { useState } from "react";
+import  designPic from "@/assets/design1.jpg"
 
 const Tours = () => {
   const [selectedTour, setSelectedTour] = useState<string | null>(null);
@@ -16,8 +17,8 @@ const Tours = () => {
       id: "1",
       title: "Elegant Wedding Setup",
       description: "Experience a luxurious wedding venue setup with gold accents and crystal details",
-      image: equipmentHero,
-      panoramaUrl: equipmentHero, // Replace with actual 360° equirectangular image
+      image: designPic,
+      panoramaUrl: designPic,
       duration: "360° Interactive Tour",
     },
     {
@@ -25,7 +26,7 @@ const Tours = () => {
       title: "Corporate Gala Event",
       description: "Professional corporate event styling with modern aesthetics and premium furnishings",
       image: equipmentHero,
-      panoramaUrl: equipmentHero, // Replace with actual 360° equirectangular image
+      panoramaUrl: equipmentHero, 
       duration: "360° Interactive Tour",
     },
     {
@@ -33,7 +34,7 @@ const Tours = () => {
       title: "Garden Party Collection",
       description: "Outdoor event setup featuring elegant outdoor furniture and decorative elements",
       image: equipmentHero,
-      panoramaUrl: equipmentHero, // Replace with actual 360° equirectangular image
+      panoramaUrl: equipmentHero, 
       duration: "360° Interactive Tour",
     },
   ];

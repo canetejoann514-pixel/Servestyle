@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import EquipmentCard from "@/components/EquipmentCard";
@@ -27,12 +26,8 @@ const Equipment = () => {
 
   const fetchEquipment = async () => {
     try {
-      const { data, error } = await supabase
-        .from('equipment')
-        .select('*')
-        .order('featured', { ascending: false });
-
-      if (error) throw error;
+      const res = await fetch('http://localhost:5000/api/equipment');
+      const data = await res.json();
       setEquipment(data || []);
     } catch (error) {
       console.error('Error fetching equipment:', error);
@@ -105,14 +100,9 @@ const Equipment = () => {
           ) : filteredEquipment.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredEquipment.map((item) => (
-                <EquipmentCard 
-                  key={item.id} 
-                  id={item.id}
-                  name={item.name}
-                  category={item.category}
-                  price={parseFloat(item.price_per_day)}
-                  image={item.image_url}
-                  available={item.available_quantity > 0}
+                <EquipmentCard
+                  key={item._id}
+                  id={item._id}
                   featured={item.featured}
                 />
               ))}
