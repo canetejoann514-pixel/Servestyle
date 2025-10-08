@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Welcome to your Lovable project
 
 ## Project info
@@ -71,3 +72,7 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+=======
+# Servestyle
+SERVESTYLE is a web-based system for Remrose Event Styling and Catering Equipment Rental Services. It allows clients to book services, manage transactions, and view virtual event setups, while enabling administrators to efficiently handle inventory, bookings, and payment notifications.
+>>>>>>> 47292ce7c4a02311f370aa7ee16c1c9b57514aa9
