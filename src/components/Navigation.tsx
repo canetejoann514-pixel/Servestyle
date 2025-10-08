@@ -34,7 +34,7 @@ const Navigation = () => {
   const fetchUnreadCount = async () => {
     if (!user) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/messages/unread/${user.id}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/messages/unread/${user.id}`);
       const data = await res.json();
       setUnreadCount(data.unreadCount || 0);
     } catch (error) {

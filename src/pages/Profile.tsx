@@ -58,7 +58,7 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/profile/${user?.id}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/profile/${user?.id}`);
       const data = await res.json();
       setProfile(data);
     } catch (error: any) {
@@ -70,7 +70,7 @@ const Profile = () => {
 
   const fetchBookings = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/bookings?userId=${user?.id}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/bookings?userId=${user?.id}`);
       const data = await res.json();
       console.log('User bookings:', data);
       setBookings(data || []);
@@ -81,7 +81,7 @@ const Profile = () => {
 
   const cancelBooking = async (bookingId: string) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/bookings/${bookingId}/cancel`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/bookings/${bookingId}/cancel`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -101,7 +101,7 @@ const Profile = () => {
     const formData = new FormData(e.currentTarget);
 
     try {
-      const res = await fetch(`http://localhost:5000/api/profile/${user?.id}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/profile/${user?.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -354,7 +354,7 @@ const Profile = () => {
                                       <Button
                                         size="sm"
                                         variant="outline"
-                                        onClick={() => window.open(`http://localhost:5000${booking.proofOfPayment}`, '_blank')}
+                                        onClick={() => window.open(`${process.env.REACT_APP_API_URL}${booking.proofOfPayment}`, '_blank')}
                                       >
                                         View Payment Proof
                                       </Button>

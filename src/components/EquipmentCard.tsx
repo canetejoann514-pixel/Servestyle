@@ -31,7 +31,7 @@ const EquipmentCard = ({
   useEffect(() => {
     const fetchEquipment = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/equipment/${id}`);
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/equipment/${id}`);
         const data = await res.json();
         setEquipment(data);
       } catch (error) {

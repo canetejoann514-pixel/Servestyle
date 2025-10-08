@@ -41,7 +41,7 @@ const AdminPaymentVerification = () => {
   const fetchPendingPayments = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/bookings");
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/bookings`);
       
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
@@ -82,7 +82,7 @@ const AdminPaymentVerification = () => {
 
     setActionLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/bookings/${bookingId}/verify-payment`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/bookings/${bookingId}/verify-payment`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -256,7 +256,7 @@ const AdminPaymentVerification = () => {
                 {selectedBooking.proofOfPayment ? (
                   <div className="border rounded-lg overflow-hidden bg-muted p-2">
                     <img
-                      src={`http://localhost:5000${selectedBooking.proofOfPayment}`}
+                      src={`${process.env.REACT_APP_API_URL}${selectedBooking.proofOfPayment}`}
                       alt="Proof of Payment"
                       className="w-full h-auto max-h-96 object-contain"
                       onError={(e) => {

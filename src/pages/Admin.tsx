@@ -55,7 +55,7 @@ const Admin = () => {
 
   const fetchBookings = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/bookings');
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/bookings`);
       const data = await res.json();
       setBookings(data || []);
     } catch (error: any) {
@@ -65,7 +65,7 @@ const Admin = () => {
 
   const fetchEquipment = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/equipment');
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/equipment`);
       const data = await res.json();
       setEquipment(data || []);
     } catch (error: any) {
@@ -75,7 +75,7 @@ const Admin = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/bookings');
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/bookings`);
       const data = await res.json();
 
       const totalBookings = data?.length || 0;
@@ -95,7 +95,7 @@ const Admin = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/users');
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/users`);
       const data = await res.json();
       setUsers(data || []);
     } catch (error: any) {
@@ -105,7 +105,7 @@ const Admin = () => {
 
   const updateBookingStatus = async (bookingId: string, status: string) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/bookings/${bookingId}/status`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/bookings/${bookingId}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
@@ -123,7 +123,7 @@ const Admin = () => {
     if (!selectedBooking) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/bookings/${selectedBooking.id}/resolve-issue`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/bookings/${selectedBooking.id}/resolve-issue`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -151,7 +151,7 @@ const Admin = () => {
     const formData = new FormData(e.currentTarget);
 
     try {
-      const res = await fetch('http://localhost:5000/api/equipment', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/equipment`, {
         method: 'POST',
         body: formData,
       });
@@ -173,7 +173,7 @@ const Admin = () => {
     const formData = new FormData(e.currentTarget);
 
     try {
-      const res = await fetch(`http://localhost:5000/api/equipment/${equipmentId}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/equipment/${equipmentId}`, {
         method: 'PUT',
         body: formData,
       });
@@ -193,7 +193,7 @@ const Admin = () => {
     if (!confirm(`Are you sure you want to delete "${equipmentName}"?`)) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/equipment/${equipmentId}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/equipment/${equipmentId}`, {
         method: 'DELETE',
       });
       
@@ -518,7 +518,7 @@ const Admin = () => {
                           <TableRow key={item._id}>
                             <TableCell>
                               <img 
-                                src={`http://localhost:5000${item.image}`} 
+                                src={`${process.env.REACT_APP_API_URL}${item.image}`} 
                                 alt={item.name}
                                 className="w-12 h-12 object-cover rounded"
                                 onError={(e) => {

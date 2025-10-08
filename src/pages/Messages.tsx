@@ -42,7 +42,7 @@ const Messages = () => {
       fetchMessages();
       
       // Connect to Socket.IO
-      socketRef.current = io('http://localhost:5000');
+      socketRef.current = io(`${process.env.REACT_APP_API_URL}`);
       socketRef.current.emit('register', user.id);
 
       // Listen for new messages
@@ -73,13 +73,13 @@ const Messages = () => {
 
   const fetchMessages = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/messages/${user?.id}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/messages/${user?.id}`);
       const data = await res.json();
       setMessages(data || []);
       
       // Mark messages as read - wait for completion
       if (data && data.length > 0) {
-        await fetch(`http://localhost:5000/api/messages/read/${user?.id}`, {
+        await fetch(`${process.env.REACT_APP_API_URL}/api/messages/read/${user?.id}`, {
           method: 'PUT'
         });
       }
@@ -95,7 +95,7 @@ const Messages = () => {
 
     setSending(true);
     try {
-      const res = await fetch('http://localhost:5000/api/messages', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

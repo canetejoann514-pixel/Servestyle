@@ -22,7 +22,7 @@ const AdminPackages = () => {
 
   const fetchPackages = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/packages");
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/packages`);
       const data = await res.json();
       setPackages(data || []);
     } catch (error: any) {

@@ -15,7 +15,7 @@ const Home = () => {
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/equipment");
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/equipment`);
         const data = await res.json();
         // Only show featured equipment
         setFeaturedEquipment(data.filter((item: any) => item.featured));

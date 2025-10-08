@@ -59,7 +59,7 @@ const AdminMessages = () => {
       fetchConversations();
       
       // Connect to Socket.IO
-      socketRef.current = io('http://localhost:5000');
+      socketRef.current = io(`${process.env.REACT_APP_API_URL}`);
       socketRef.current.emit('register', 'admin');
 
       // Listen for new messages
@@ -94,7 +94,7 @@ const AdminMessages = () => {
 
   const fetchConversations = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/messages/conversations');
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/messages/conversations`);
       const data = await res.json();
       setConversations(data || []);
     } catch (error) {
@@ -105,13 +105,13 @@ const AdminMessages = () => {
   const selectConversation = async (conversation: Conversation) => {
     setSelectedUser(conversation);
     try {
-      const res = await fetch(`http://localhost:5000/api/messages/${conversation.userId}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/messages/${conversation.userId}`);
       const data = await res.json();
       setMessages(data || []);
       
       // Mark as read - wait for it to complete (pass isAdmin=true)
       if (conversation.unreadCount > 0) {
-        await fetch(`http://localhost:5000/api/messages/read/${conversation.userId}?isAdmin=true`, {
+        await fetch(`${process.env.REACT_APP_API_URL}/api/messages/read/${conversation.userId}?isAdmin=true`, {
           method: 'PUT'
         });
         
@@ -130,7 +130,7 @@ const AdminMessages = () => {
 
     setSending(true);
     try {
-      const res = await fetch('http://localhost:5000/api/messages', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

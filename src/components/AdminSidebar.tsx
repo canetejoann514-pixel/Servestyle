@@ -41,7 +41,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed, activeTab, onTabChange }: A
 
   const fetchUnreadCount = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/messages/conversations');
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/messages/conversations`);
       const data = await res.json();
       const total = data.reduce((sum: number, conv: any) => sum + conv.unreadCount, 0);
       setUnreadCount(total);
@@ -52,7 +52,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed, activeTab, onTabChange }: A
 
   const fetchPendingPayments = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/bookings');
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/bookings`);
       const data = await res.json();
       const pending = data.filter(
         (booking: any) => 

@@ -47,7 +47,7 @@ const Packages = () => {
 
   const fetchPackages = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/packages");
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/packages`);
       if (!res.ok) throw new Error("Failed to fetch packages");
       const data = await res.json();
       setPackages(data || []);
@@ -154,7 +154,7 @@ const Packages = () => {
                   {/* Image */}
                   <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                     <img
-                      src={pkg.image ? `http://localhost:5000${pkg.image}` : '/placeholder.svg'}
+                      src={pkg.image ? `${process.env.REACT_APP_API_URL}${pkg.image}` : '/placeholder.svg'}
                       alt={pkg.name}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                       onError={(e) => {
@@ -243,7 +243,7 @@ const Packages = () => {
               {/* Image */}
               {selectedPackage.image && (
                 <img
-                  src={`http://localhost:5000${selectedPackage.image}`}
+                  src={`${process.env.REACT_APP_API_URL}${selectedPackage.image}`}
                   alt={selectedPackage.name}
                   className="w-full h-64 object-cover rounded-lg"
                   onError={(e) => {

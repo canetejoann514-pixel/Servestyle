@@ -12,7 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 const signUp = async (userData: any) => {
   try {
-    const res = await fetch('http://localhost:5000/api/signup', {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData),
@@ -27,7 +27,7 @@ const signUp = async (userData: any) => {
 
 const verifyOTP = async (email: string, otp: string) => {
   try {
-    const res = await fetch('http://localhost:5000/api/verify-otp', {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/verify-otp`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, otp }),
@@ -42,7 +42,7 @@ const verifyOTP = async (email: string, otp: string) => {
 
 const resendOTP = async (email: string) => {
   try {
-    const res = await fetch('http://localhost:5000/api/resend-otp', {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/resend-otp`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),

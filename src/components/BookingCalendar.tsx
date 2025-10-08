@@ -25,7 +25,7 @@ const BookingCalendar = ({ onDateSelect, selectedStartDate, selectedEndDate }: B
   const fetchConfirmedBookedDates = async () => {
     try {
       setLoading(true);
-      const res = await fetch('http://localhost:5000/api/bookings');
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/bookings`);
       const bookings = await res.json();
       
       // ✅ ONLY show dates that are CONFIRMED (not pending, cancelled, etc.)

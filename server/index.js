@@ -76,7 +76,6 @@ const sendOTPEmail = async (email, otp, name) => {
     `
   };
 
-// Add this function near your other email functions in index.js (around line 60)
 
 // Helper function to send payment rejection email
 const sendPaymentRejectionEmail = async (userEmail, userName, bookingDetails, rejectionReason) => {
