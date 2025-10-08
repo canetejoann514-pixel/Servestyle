@@ -27,7 +27,10 @@ const io = new Server(httpServer, {
 });
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+origin: 'http://remrose-catering-rental-qada.vercel.app',
+credentials: true
+}));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1494,6 +1497,6 @@ app.get('/api/messages/unread/:userId', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-httpServer.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
 });
